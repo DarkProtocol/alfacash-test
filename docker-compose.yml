@@ -1,0 +1,59 @@
+version: '3.9'
+networks:
+  alfacash-backend:
+  traefik:
+    external: true
+volumes:
+  postgres:
+services:
+  backend: &backend-template
+    image: alfacash-backend:latest
+    build:
+      context: './backend'
+      target: 'dev'
+    volumes:
+      - './backend:/app'
+      - '/app/docker'
+    depends_on:
+      - postgres
+      - neo4j
+      - redis
+    env_file:
+      - './backend/.env.local'
+    networks:
+      - alfacash-backend
+      - traefik
+    command:
+      - /bin/bash
+      - -c
+      - php artisan octane:start --host=0.0.0.0 --watch
+    labels:
+      traefik.enable: 'true'
+      traefik.docker.network: traefik
+      traefik.http.routers.backend.rule: Host(`api.alfacash.local`)
+      traefik.http.services.backend.loadbalancer.server.port: 8000
+  postgres:
+    image: postgres:13.3-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+    ports:
+      - '7733:5432'
+    volumes:
+      - 'postgres:/var/lib/postgresql/data'
+    networks:
+      - alfacash-backend
+  neo4j:
+    image: neo4j:latest
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      NEO4J_AUTH: 'neo4j/password'
+    networks:
+      - alfacash-backend
+  redis:
+    image: redis:6.2.5-alpine
+    networks:
+      - alfacash-backend

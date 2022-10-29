@@ -1,0 +1,33 @@
+version: '3.9'
+networks:
+  traefik:
+    name: traefik
+services:
+  traefik:
+    image: traefik:2.8.3
+    container_name: traefik
+    restart: always
+    environment:
+      TRAEFIK_LOG_LEVEL: DEBUG
+      TRAEFIK_API: 'true'
+      TRAEFIK_ENTRYPOINTS_http: 'true'
+      TRAEFIK_ENTRYPOINTS_http_ADDRESS: :80
+      TRAEFIK_ENTRYPOINTS_https: 'true'
+      TRAEFIK_ENTRYPOINTS_https_ADDRESS: :443
+      TRAEFIK_ENTRYPOINTS_https_HTTP_TLS: 'true'
+      TRAEFIK_GLOBAL_CHECKNEWVERSION: 'false'
+      TRAEFIK_GLOBAL_SENDANONYMOUSUSAGE: 'false'
+      TRAEFIK_PROVIDERS_DOCKER: 'true'
+      TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT: 'false'
+    labels:
+      traefik.enable: true
+      traefik.docker.network: traefik
+      traefik.http.routers.traefik.rule: Host(`traefik.local`)
+      traefik.http.routers.traefik.service: api@internal
+    networks:
+      - traefik
+    ports:
+      - 127.0.0.1:80:80
+      - 127.0.0.1:443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

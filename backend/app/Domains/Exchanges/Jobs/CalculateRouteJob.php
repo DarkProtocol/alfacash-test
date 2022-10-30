@@ -78,6 +78,7 @@ class CalculateRouteJob extends Job
      * @param array $orders
      * @param string $amount
      * @return array|null
+     * @throws Exception
      */
     #[Pure]
     protected function calculateAsks (string $minOrder, int $precision, array $orders, string $amount): ?array
@@ -90,6 +91,10 @@ class CalculateRouteJob extends Job
             $orderAmount = Str::bcMathPrepare($order[1], 18);
 
             if (bccomp($minOrder, $amount, 18) >= 0) {
+                if (bccomp($finalRate, '0', 18) === 0) {
+                    throw new Exception('Too small order');
+                }
+
                 return [$finalAmount, bcdiv($finalRate, $finalAmount, 18)];
             }
 
@@ -109,7 +114,7 @@ class CalculateRouteJob extends Job
             $amount = '0';
         }
 
-        throw new ApiException('Need more orders');
+        throw new Exception('Need more orders');
     }
 
     /**
@@ -120,6 +125,7 @@ class CalculateRouteJob extends Job
      * @param array $orders
      * @param string $amount
      * @return array|null
+     * @throws Exception
      */
     #[Pure]
     protected function calculateBids (string $minOrder, int $precision, array $orders, string $amount): ?array
@@ -134,6 +140,10 @@ class CalculateRouteJob extends Job
             $amount = bcdiv($amount, $orderPrice, 18);
 
             if (bccomp($minOrder, $amount, 18) >= 0) {
+                if (bccomp($finalRate, '0', 18) === 0) {
+                    throw new Exception('Too small order');
+                }
+
                 return [$finalAmount, bcdiv($finalAmount, $finalRate, 18)];
             }
 

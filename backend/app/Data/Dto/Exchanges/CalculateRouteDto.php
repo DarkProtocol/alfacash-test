@@ -38,7 +38,7 @@ class CalculateRouteDto
 
     public function getFee(): string
     {
-        return $this->rate;
+        return $this->fee;
     }
 
     public function getPrecision(): int

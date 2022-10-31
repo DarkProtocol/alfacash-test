@@ -80,7 +80,7 @@ class CalculateRouteJob extends Job
      * @throws Exception
      */
     #[Pure]
-    protected function calculateAsks (string $minOrder, int $precision, array $orders, string $amount): ?array
+    protected function calculateAsks(string $minOrder, int $precision, array $orders, string $amount): ?array
     {
         $finalAmount = '0';
         $finalRate = '0';
@@ -127,7 +127,7 @@ class CalculateRouteJob extends Job
      * @throws Exception
      */
     #[Pure]
-    protected function calculateBids (string $minOrder, int $precision, array $orders, string $amount): ?array
+    protected function calculateBids(string $minOrder, int $precision, array $orders, string $amount): ?array
     {
         $finalAmount = '0';
         $finalRate = '0';

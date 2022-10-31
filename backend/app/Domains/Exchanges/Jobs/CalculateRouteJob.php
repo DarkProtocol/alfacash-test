@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domains\Exchanges\Jobs;
 
-use App\Common\Http\Exceptions\ApiException;
 use App\Common\Support\Str;
 use App\Data\Dto\Exchanges\CalculateRouteDto;
 use App\Domains\Exchanges\Clients\ClientInterface;

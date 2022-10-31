@@ -62,11 +62,13 @@ class BestRateFeature extends Feature
 
                 $collection->push([
                     'path' => implode(' -> ', $dto->getRoute()),
-                    'estimatedGraphPrice' => Str::bcround($dto->getEstimatedPrice(), $dto->getPrecision()),
-                    'priceWithoutFee' => Str::bcround($dto->getRealPrice(), $dto->getPrecision()),
-                    'realPrice' => bcsub($dto->getRealPrice(), $dto->getFee(), $dto->getPrecision()),
-                    'rateWithoutFee' => Str::bcround($dto->getRate(), $dto->getPrecision()),
-                    'fee' => Str::bcround($dto->getFee(), $dto->getPrecision()),
+                    'estimatedGraphPrice' => Str::cleanDecimals(
+                        Str::bcround($dto->getEstimatedPrice(), $dto->getPrecision())
+                    ),
+                    'priceWithoutFee' => Str::cleanDecimals(Str::bcround($dto->getRealPrice(), $dto->getPrecision())),
+                    'realPrice' => Str::cleanDecimals(bcsub($dto->getRealPrice(), $dto->getFee(), $dto->getPrecision())),
+                    'rateWithoutFee' => Str::cleanDecimals(Str::bcround($dto->getRate(), $dto->getPrecision())),
+                    'fee' => Str::cleanDecimals(Str::bcround($dto->getFee(), $dto->getPrecision())),
                 ]);
             } catch (Exception $e) {
                 $logger->error($e->getMessage(), [
